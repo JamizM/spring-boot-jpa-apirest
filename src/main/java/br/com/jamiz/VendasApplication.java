@@ -1,11 +1,9 @@
 package br.com.jamiz;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,8 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController//mandar mensagens atraves do browser
 public class VendasApplication {
 
-    @Autowired
-    @Qualifier("applicationName")
+    @Value("${application.name}") //aplicando interpolção - vai procurar a propriedade escrita entre aspas, e vai pegar o valor que esta la e vai injetar la dentro
     //pega o objeto "aplicationName" da classe "MinhaConfiguracao" e
     private String applicationName;
 
@@ -24,6 +21,8 @@ public class VendasApplication {
     public String helloWorld(){
         return applicationName;
     }
+    //como dentro de application.properties esta rodando na raiz do projeto /sistemas-vendas, ira rodar nesta
+    //pasta principal, porem cdesta forma -> /sistema-vendas/hello
 
     public static void main(String[] args) {
         SpringApplication.run(VendasApplication.class, args);
