@@ -1,11 +1,21 @@
 package br.com.jamiz.domain.entity;
 
+import jakarta.persistence.*;
+
+@Entity//necessita de uma PK para funcionar
+//JPA entende que todas as propriedades da classe definida como @Entity, sao colunas na base de dados
+//
 public class Cliente {
+
+    @Id //define qual a primery key da entidade, na qual é o proprio "id"
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    //Essa anotação é usada para indicar como a chave primária (ID) da entidade deve ser gerada
+    //automaticamente quando uma nova instância da entidade é persistida no banco de dados.
     private Integer id;
     private String nome;
 
     public Cliente(){
-
+        
     }
 
     public Cliente(String nome, Integer id) { //construtores que recebem o ID e Nome
