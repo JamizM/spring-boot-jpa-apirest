@@ -8,6 +8,7 @@ import java.util.List;
 import br.com.jamiz.domain.entity.Cliente;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate; //vem com conexoes configuradas
 import org.springframework.jdbc.core.RowMapper; //mapeia o resultado do DB para uma classe
@@ -20,15 +21,13 @@ public class Clientes {
 
     //private static final String INSERT = "INSERT INTO CLIENTE (NOME) VALUES (?) "; //aqui ocorre o comando SQL para colocar o cliente na tabela
     private static final String LIST_ALL = "SELECT * FROM CLIENTE ";
-    private static final String UPDATE = "UPDATE CLIENTE SET NOME = ? WHERE ID = ? ";
-    private static final String DELETE = "DELETE FROM CLIENTE WHERE ID = ? ";
 
-    private final JdbcTemplate jdbcTemplate;
+//    private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    public Clientes(JdbcTemplate jdbcTemplate) { //usando construtor para poder fazer a injeção de dependencia
-        this.jdbcTemplate = jdbcTemplate;
-    }
+//    @Autowired
+//    public Clientes(JdbcTemplate jdbcTemplate) { //usando construtor para poder fazer a injeção de dependencia
+//        this.jdbcTemplate = jdbcTemplate;
+//    }
 
     @Autowired
     private EntityManager entityManager; //EntityManager, interface que faz todas as operações na base com as entidades
@@ -41,33 +40,44 @@ public class Clientes {
          entityManager.persist(cliente);
          return cliente;
          //chama-se esta funcao para poder colocar o cliente dentro da tabela, usando a lib, jdbcTeamplate.update
-
+        //depois de entrar no paramatro do método, ele fica no estado "Manager" = iniciada/gerenciada
     }
 
+    @Transactional
     public Cliente atualizar(Cliente cliente){
-        jdbcTemplate.update(UPDATE, new Object[]{cliente.getNome(), cliente.getId()});
+        entityManager.merge(cliente); //merge() utilizado para atualizar uma entidade
         return cliente;
     }
 
+    @Transactional
     public void deletar(Integer id){
-        jdbcTemplate.update(DELETE, new Object[]{id}); //como no comando "DELETE" remove o usuario pelo ID, usamos a nosso favor
-
+        entityManager.remove(id);
+//        Cliente cliente = entityManager.find(Cliente.class, id);
+//        deletar(cliente);
+        //quando quiser obter entidade pela PK, basta usar find(classe, identificador)
+        //se caso nao der certo o entityManager.remove(id); substituir
     }
 
+    @Transactional
     public void deletar(Cliente cliente){
-        deletar(cliente.getId());
+        if(!entityManager.contains(cliente)){
+            entityManager.merge(cliente);
+        }
+        entityManager.remove(cliente);
     }
 
+    @Transactional(readOnly = true) //transacao é apenas leitura
     public List<Cliente> buscarPorNome(String nome){
-        return jdbcTemplate.query(
-            LIST_ALL.concat("WHERE NOME LIKE ?"),
-            new Object[] {"%" + nome + "%"}, //buscar nome so pelo primeiro nome, sem ter que escrever tudo
-            obterClienteMapper());
+        String jpql = " SELECT C FROM Cliente C WHERE C.nome LIKE :NOME ";
+        TypedQuery<Cliente> query = entityManager.createQuery(jpql, Cliente.class);
+        query.setParameter(nome, "%" + nome + "%");
+        return query.getResultList();
     }
 
     public List<Cliente> obterClientes(){
         //funcao ira fazer o select, depois vai mapear as colunas para a entidade "Cliente"
-        return jdbcTemplate.query(LIST_ALL, obterClienteMapper());
+        return entityManager.createQuery("from Cliente ", Cliente.class)
+                .getResultList();
     }
 
     public RowMapper<Cliente> obterClienteMapper(){
