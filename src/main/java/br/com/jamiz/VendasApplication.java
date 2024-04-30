@@ -19,11 +19,11 @@ public class VendasApplication {
         return args -> {
             System.out.println("salvando clientes");
 
-            clientes.salvarCliente(new Cliente("Douglas"));
+            clientes.save(new Cliente("Douglas"));
 
-            clientes.salvarCliente(new Cliente("Pedrin"));
+            clientes.save(new Cliente("Pedrin"));
 
-            List<Cliente> todosClientes = clientes.obterClientes();
+            List<Cliente> todosClientes = clientes.findAll();
             todosClientes.forEach(System.out::println);
             //"::" -Ele é usado para referenciar métodos existentes ou construtores de uma forma mais concisa
             //no caso se nao tive que usar o operador ": :", seria adequado usar o lambda "->", ou seja:
@@ -33,23 +33,21 @@ public class VendasApplication {
             System.out.println("Atualizando Clientes");
             todosClientes.forEach(c -> {
                 c.setNome(c.getNome() + " atualizado.");
-                clientes.atualizar(c);
+                clientes.save(c);
             });
 
-            todosClientes = clientes.obterClientes();
+            todosClientes = clientes.findAll();
             todosClientes.forEach(System.out::println);
 
-//            clientes.buscarPorNome("Cli").forEach(System.out::println);
+            clientes.findByNomeLike("Cli").forEach(System.out::println);
 
-            //System.out.println("deletando clientes");
-            //clientes.obterClientes().forEach(clientes::deletar);
+            System.out.println("deletando clientes");
+            clientes.findAll().forEach(c -> {
+                clientes.delete(c);});
 
-            todosClientes = clientes.obterClientes();
+            todosClientes = clientes.findAll();
             if(todosClientes.isEmpty()){
                 System.out.println("nenhum cliente ta na tabela");
-            }
-            else{
-                todosClientes.forEach((System.out::println));
             }
             todosClientes.forEach(System.out::println);
         };
