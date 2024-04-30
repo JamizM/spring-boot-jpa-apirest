@@ -17,6 +17,8 @@ public class VendasApplication {
     @Bean
     public CommandLineRunner init(@Autowired Clientes clientes){
         return args -> {
+            System.out.println("salvando clientes");
+
             clientes.salvarCliente(new Cliente("Douglas"));
 
             clientes.salvarCliente(new Cliente("Pedrin"));
@@ -27,6 +29,29 @@ public class VendasApplication {
             //no caso se nao tive que usar o operador ": :", seria adequado usar o lambda "->", ou seja:
             //todosClientes.forEach(s -> System.out.println);
             //porem como nao queremos comer muita bola, usamos este operador
+
+            System.out.println("Atualizando Clientes");
+            todosClientes.forEach(c -> {
+                c.setNome(c.getNome() + " atualizado.");
+                clientes.atualizar(c);
+            });
+
+            todosClientes = clientes.obterClientes();
+            todosClientes.forEach(System.out::println);
+
+            clientes.buscarPorNome("CLICLI").forEach(System.out::println);
+
+            //System.out.println("deletando clientes");
+            //clientes.obterClientes().forEach(clientes::deletar);
+
+            todosClientes = clientes.obterClientes();
+            if(todosClientes.isEmpty()){
+                System.out.println("nenhum cliente ta na tabela");
+            }
+            else{
+                todosClientes.forEach((System.out::println));
+            }
+            todosClientes.forEach(System.out::println);
         };
     }
 

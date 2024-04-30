@@ -17,7 +17,9 @@ import org.springframework.stereotype.Repository;
 public class Clientes {
 
     private static final String INSERT = "INSERT INTO CLIENTE (NOME) VALUES (?) "; //aqui ocorre o comando SQL para colocar o cliente na tabela
-    private static final String LIST_ALL = "SELECT * FROM CLIENTE";
+    private static final String LIST_ALL = "SELECT * FROM CLIENTE ";
+    private static final String UPDATE = "UPDATE CLIENTE SET NOME = ? WHERE ID = ? ";
+    private static final String DELETE = "DELETE FROM CLIENTE WHERE ID = ? ";
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -34,9 +36,34 @@ public class Clientes {
 
     }
 
+    public Cliente atualizar(Cliente cliente){
+        jdbcTemplate.update(UPDATE, new Object[]{cliente.getNome(), cliente.getId()});
+        return cliente;
+    }
+
+    public void deletar(Integer id){
+        jdbcTemplate.update(DELETE, new Object[]{id}); //como no comando "DELETE" remove o usuario pelo ID, usamos a nosso favor
+
+    }
+
+    public void deletar(Cliente cliente){
+        deletar(cliente.getId());
+    }
+
+    public List<Cliente> buscarPorNome(String nome){
+        return jdbcTemplate.query(
+            LIST_ALL.concat("WHERE NOME LIKE ?"),
+            new Object[] {"%" + nome + "%"}, //buscar nome so pelo primeiro nome, sem ter que escrever tudo
+            obterClienteMapper());
+    }
+
     public List<Cliente> obterClientes(){
         //funcao ira fazer o select, depois vai mapear as colunas para a entidade "Cliente"
-        return jdbcTemplate.query(LIST_ALL, new RowMapper<Cliente>() {
+        return jdbcTemplate.query(LIST_ALL, obterClienteMapper());
+    }
+
+    public RowMapper<Cliente> obterClienteMapper(){
+        return new RowMapper<Cliente>() {
             @Override
             public Cliente mapRow(ResultSet rs, int rowNum) throws SQLException {
                 Integer id = rs.getInt("id");
@@ -45,6 +72,6 @@ public class Clientes {
                 //ResultSet - todos os resultados que ve la do DB
                 //Row
             }
-        });
+        };
     }
 }
