@@ -7,16 +7,18 @@ import java.util.List;
 
 import br.com.jamiz.domain.entity.Cliente;
 
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate; //vem com conexoes configuradas
 import org.springframework.jdbc.core.RowMapper; //mapeia o resultado do DB para uma classe
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository //fazer com que o spring registre essa classe como um repositorio - acessa base de dados
 //especificadade -> spring vai enteder que faz alterações na base de dados, todas as exception que ocorrem na base, vao ser traduzidas para você
 public class Clientes {
 
-    private static final String INSERT = "INSERT INTO CLIENTE (NOME) VALUES (?) "; //aqui ocorre o comando SQL para colocar o cliente na tabela
+    //private static final String INSERT = "INSERT INTO CLIENTE (NOME) VALUES (?) "; //aqui ocorre o comando SQL para colocar o cliente na tabela
     private static final String LIST_ALL = "SELECT * FROM CLIENTE ";
     private static final String UPDATE = "UPDATE CLIENTE SET NOME = ? WHERE ID = ? ";
     private static final String DELETE = "DELETE FROM CLIENTE WHERE ID = ? ";
@@ -28,11 +30,17 @@ public class Clientes {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    @Autowired
+    private EntityManager entityManager; //EntityManager, interface que faz todas as operações na base com as entidades
+    //ou seja, se formos no método salvarCliente(), ao inves de usarmos a jdbc, usamos o EntityManager
+    //ele vai reconhecer cada uma dessas colunas e vai persistir/salvar o cliente
+
+    @Transactional //entityManager precisa de uma transacao para fazer as operacoes
+    //necessario colocar o @Transactional pois vaoi gerar ma transacao na base de dados
     public Cliente salvarCliente(Cliente cliente){
-         jdbcTemplate.update(INSERT, new Object[]{cliente.getNome()} );
+         entityManager.persist(cliente);
          return cliente;
          //chama-se esta funcao para poder colocar o cliente dentro da tabela, usando a lib, jdbcTeamplate.update
-        // na qual é passado a string do insert e o objeto que pegamos o nome da entidade "Cliente"
 
     }
 
