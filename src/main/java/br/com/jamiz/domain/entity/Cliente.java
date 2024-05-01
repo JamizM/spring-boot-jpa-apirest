@@ -2,9 +2,10 @@ package br.com.jamiz.domain.entity;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity//necessita de uma PK para funcionar
 //JPA entende que todas as propriedades da classe definida como @Entity, sao colunas na base de dados
-//
 public class Cliente {
 
     @Id //define qual a primery key da entidade, na qual é o proprio "id"
@@ -15,12 +16,23 @@ public class Cliente {
     private String nome;
 
     public Cliente(){
-        
+
     }
 
     public Cliente(String nome, Integer id) { //construtores que recebem o ID e Nome
         this.nome = nome;
         this.id = id;
+    }
+
+    @OneToMany(mappedBy = "cliente") //esta entidade no DB, nao tem uma chave para pedidos,
+    private Set<Pedido> pedidos;
+
+    public Set<Pedido> getPedidos() {
+        return pedidos;
+    }
+
+    public void setPedidos(Set<Pedido> pedidos) {
+        this.pedidos = pedidos;
     }
 
     public Cliente (String nome){
