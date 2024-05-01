@@ -27,4 +27,9 @@ public interface Clientes extends JpaRepository<Cliente, Integer> {
     @Modifying//necessario especificar que nao é uma consulta
     @Transactional
     List<Cliente> deleteByNome(@Param("nome") String nome);
+
+
+    @Query(value = "select c from Cliente c left join fetch c.pedidos where c.id = :id")
+    //: dentro da query, reconhecido como parametro
+    Cliente findClienteFetchPedidos(@Param("id") Integer id);
 }

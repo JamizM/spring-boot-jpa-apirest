@@ -7,7 +7,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Table(name = "pedido")
 public class Pedido {
 
     @Id
@@ -17,13 +16,13 @@ public class Pedido {
     //mapeando uma FK (Foreign Key), pois na linha 14 do .sql, temos o client_id referenciando a tabela de cliente
     @ManyToOne //muitos para um
     @JoinColumn(name = "cliente_id")
-    private Cliente client;
+    private Cliente cliente;
 
     @Column(name = "data_pedido")
     //JPA ja reconhece o tipo de propriedade LocalDate
     private LocalDate dataPedido;
 
-    @Column(name = "total", length = 20, precision = 2) //como na tabela "total" temos BigDecila, que é um ponto flutuate (float)
+    @Column(precision = 20, scale = 2) //como na tabela "total" temos BigDecimal, que é um ponto flutuate (float)
     //colocamos o tamanho length=20, que é seu tamanho, e duas casas decimais (precision=2)
     private BigDecimal total;
 
@@ -38,12 +37,12 @@ public class Pedido {
         this.id = id;
     }
 
-    public Cliente getClient() {
-        return client;
+    public Cliente getCliente() {
+        return cliente;
     }
 
-    public void setClient(Cliente client) {
-        this.client = client;
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
     }
 
     public LocalDate getDataPedido() {
@@ -60,5 +59,14 @@ public class Pedido {
 
     public void setTotal(BigDecimal total) {
         this.total = total;
+    }
+
+    @Override
+    public String toString() {
+        return "Pedido{" +
+                "id=" + id +
+                ", dataPedido=" + dataPedido +
+                ", total=" + total +
+                '}';
     }
 }

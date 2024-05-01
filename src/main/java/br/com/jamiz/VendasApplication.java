@@ -1,7 +1,9 @@
 package br.com.jamiz;
 
 import br.com.jamiz.domain.entity.Cliente;
+import br.com.jamiz.domain.entity.Pedido;
 import br.com.jamiz.domain.repository.Clientes;
+import br.com.jamiz.domain.repository.Pedidos;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -9,19 +11,35 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import java.util.List;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @SpringBootApplication
 public class VendasApplication {
 
     @Bean
-    public CommandLineRunner init(@Autowired Clientes clientes){
+    public CommandLineRunner init(@Autowired Clientes clientes, Pedidos pedidos){
         return args -> {
             System.out.println("salvando clientes");
-
             clientes.save(new Cliente("Douglas"));
 
-            clientes.save(new Cliente("Pedrin"));
+            Cliente pedrin = new Cliente("Pedrin");
+            clientes.save(pedrin);
+
+            Pedido p = new Pedido();
+            p.setCliente(pedrin);
+            p.setTotal(BigDecimal.valueOf(100));
+            p.setDataPedido(LocalDate.now());
+
+            pedidos.save(p);
+
+//            Cliente cliente = clientes.findClienteFetchPedidos(pedrin.getId());
+//            System.out.println(cliente);
+//            System.out.println(cliente.getPedidos());
+
+
+            pedidos.findByCliente(pedrin).forEach(System.out::println);
+
 
 //            List<Cliente> todosClientes = clientes.findAll();
 //            todosClientes.forEach(System.out::println);
@@ -50,9 +68,6 @@ public class VendasApplication {
 //                System.out.println("nenhum cliente ta na tabela");
 //            }
 //            todosClientes.forEach(System.out::println);
-
-            List<Cliente> result = clientes.findByNomeLike("Douglas"); //transformando em uma consulta com o @query'
-            result.forEach(System.out::println);
         };
     }
 

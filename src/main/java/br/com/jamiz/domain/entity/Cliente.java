@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 
 import java.util.Set;
 
-@Entity//necessita de uma PK para funcionar
 //JPA entende que todas as propriedades da classe definida como @Entity, sao colunas na base de dados
+@Entity//necessita de uma PK para funcionar
 public class Cliente {
 
     @Id //define qual a primery key da entidade, na qual é o proprio "id"
@@ -24,8 +24,11 @@ public class Cliente {
         this.id = id;
     }
 
-    @OneToMany(mappedBy = "cliente") //esta entidade no DB, nao tem uma chave para pedidos,
-    private Set<Pedido> pedidos;
+    @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY) //esta entidade no DB, nao tem uma chave para pedidos,
+    //FetchType.EAGER -> ira trazer todos os relatiorios de pedidos isso irá deixar consulta bem pesada
+    private Set<Pedido> pedidos; //colecao de objetos da clases pedido
+    //Set<> -> demonstra que não deve ter elementos duplicados
+
 
     public Set<Pedido> getPedidos() {
         return pedidos;
