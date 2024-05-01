@@ -27,7 +27,4 @@ public interface Clientes extends JpaRepository<Cliente, Integer> {
     @Modifying//necessario especificar que nao é uma consulta
     @Transactional
     List<Cliente> deleteByNome(@Param("nome") String nome);
-
-
-
 }
