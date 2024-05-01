@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "pedido")
@@ -25,6 +26,9 @@ public class Pedido {
     @Column(name = "total", length = 20, precision = 2) //como na tabela "total" temos BigDecila, que é um ponto flutuate (float)
     //colocamos o tamanho length=20, que é seu tamanho, e duas casas decimais (precision=2)
     private BigDecimal total;
+
+    @OneToMany
+    private List<ItemPedido> itens; //referencia com a tabela ItemPedido
 
     public Integer getId() {
         return id;
