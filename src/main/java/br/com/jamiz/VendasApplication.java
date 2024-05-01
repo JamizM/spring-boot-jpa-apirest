@@ -23,33 +23,36 @@ public class VendasApplication {
 
             clientes.save(new Cliente("Pedrin"));
 
-            List<Cliente> todosClientes = clientes.findAll();
-            todosClientes.forEach(System.out::println);
-            //"::" -Ele é usado para referenciar métodos existentes ou construtores de uma forma mais concisa
-            //no caso se nao tive que usar o operador ": :", seria adequado usar o lambda "->", ou seja:
-            //todosClientes.forEach(s -> System.out.println);
-            //porem como nao queremos comer muita bola, usamos este operador
+//            List<Cliente> todosClientes = clientes.findAll();
+//            todosClientes.forEach(System.out::println);
+//            //"::" -Ele é usado para referenciar métodos existentes ou construtores de uma forma mais concisa
+//            //no caso se nao tive que usar o operador ": :", seria adequado usar o lambda "->", ou seja:
+//            //todosClientes.forEach(s -> System.out.println);
+//            //porem como nao queremos comer muita bola, usamos este operador
+//
+//            System.out.println("Atualizando Clientes");
+//            todosClientes.forEach(c -> {
+//                c.setNome(c.getNome() + " atualizado.");
+//                clientes.save(c);
+//            });
+//
+//            todosClientes = clientes.findAll();
+//            todosClientes.forEach(System.out::println);
+//
+//            clientes.findByNomeLike("Cli").forEach(System.out::println);
+//
+//            System.out.println("deletando clientes");
+//            clientes.findAll().forEach(c -> {
+//                clientes.delete(c);});
+//
+//            todosClientes = clientes.findAll();
+//            if(todosClientes.isEmpty()){
+//                System.out.println("nenhum cliente ta na tabela");
+//            }
+//            todosClientes.forEach(System.out::println);
 
-            System.out.println("Atualizando Clientes");
-            todosClientes.forEach(c -> {
-                c.setNome(c.getNome() + " atualizado.");
-                clientes.save(c);
-            });
-
-            todosClientes = clientes.findAll();
-            todosClientes.forEach(System.out::println);
-
-            clientes.findByNomeLike("Cli").forEach(System.out::println);
-
-            System.out.println("deletando clientes");
-            clientes.findAll().forEach(c -> {
-                clientes.delete(c);});
-
-            todosClientes = clientes.findAll();
-            if(todosClientes.isEmpty()){
-                System.out.println("nenhum cliente ta na tabela");
-            }
-            todosClientes.forEach(System.out::println);
+            List<Cliente> result = clientes.findByNomeLike("Douglas"); //transformando em uma consulta com o @query'
+            result.forEach(System.out::println);
         };
     }
 
