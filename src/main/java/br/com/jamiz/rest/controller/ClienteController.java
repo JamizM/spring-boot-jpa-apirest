@@ -3,10 +3,13 @@ package br.com.jamiz.rest.controller;
 import br.com.jamiz.domain.entity.Cliente;
 import br.com.jamiz.domain.repository.Clientes;
 
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -62,5 +65,17 @@ public class ClienteController {
                 .orElseGet( () -> ResponseEntity.notFound().build()); // caso seja buscado o cliente dentro do banco
         //e nao há o cliente, ele devolve um notFound
         //map() se caso existir o resultado, entra dentro do método map
+    }
+
+    @GetMapping
+    public ResponseEntity find(Cliente filtro){
+        ExampleMatcher matcher = ExampleMatcher
+                .matching()
+                .withIgnoreCase()
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
+        Example example = Example.of(filtro, matcher);
+        List<Cliente> lista = clientes.findAll(example); //fazendo pesquisa
+        //vai pegar as propriedades populadas do objeto "filtro" e
+        return ResponseEntity.ok(lista);
     }
 }
