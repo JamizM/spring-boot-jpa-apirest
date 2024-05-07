@@ -3,7 +3,6 @@ package br.com.jamiz.rest.controller;
 import br.com.jamiz.domain.entity.Cliente;
 import br.com.jamiz.domain.repository.Clientes;
 
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -36,5 +35,18 @@ public class ClienteController {
     public ResponseEntity save(@RequestBody Cliente cliente){
         Cliente clienteSalvo = clientes.save(cliente);
         return ResponseEntity.ok(clienteSalvo);
+    }
+
+    @DeleteMapping("{id}")
+    @ResponseBody
+    public ResponseEntity delete(@PathVariable Integer id){
+        Optional<Cliente> cliente = clientes.findById(id);
+
+        if(cliente.isPresent()){
+            clientes.delete(cliente.get()); //usado o delete() pois a classe instancia da classe "Clientes"
+            //tem o Jpa que ja vem método juntos com que
+        }
+        return ResponseEntity.noContent().build();
+        //usado o noContent quando nao vamos returnar nada no corpo da requisicao
     }
 }
