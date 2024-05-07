@@ -37,7 +37,7 @@ public class ClienteController {
         return ResponseEntity.ok(clienteSalvo);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     @ResponseBody
     public ResponseEntity delete(@PathVariable Integer id){
         Optional<Cliente> cliente = clientes.findById(id);
@@ -48,5 +48,19 @@ public class ClienteController {
         }
         return ResponseEntity.noContent().build();
         //usado o noContent quando nao vamos returnar nada no corpo da requisicao
+    }
+
+    @PutMapping("/{id}")
+    @ResponseBody
+    public ResponseEntity update(@PathVariable Integer id, @RequestBody Cliente cliente){
+
+        return clientes.findById(id).map(clienteExistente -> {
+            cliente.setId(clienteExistente.getId());
+            clientes.save(cliente); //atualiza dentro do banco
+            return ResponseEntity.noContent().build();
+        })
+                .orElseGet( () -> ResponseEntity.notFound().build()); // caso seja buscado o cliente dentro do banco
+        //e nao há o cliente, ele devolve um notFound
+        //map() se caso existir o resultado, entra dentro do método map
     }
 }
