@@ -15,6 +15,7 @@ import java.util.List;
 @RequestMapping("/api/produtos")
 public class ProdutoController {
     private Produtos produtos;
+
     public ProdutoController(Produtos produtos){
         this.produtos = produtos;
     }
@@ -38,33 +39,26 @@ public class ProdutoController {
         produtos
                 .findById(id)
                 .map(produtoExistente -> {
-                    produto.setId(produtoExistente.getId());
+                    produtos.delete(produtoExistente); // aqui ocorre a deleção
                     produtos.save(produto);
                     return produto;
                 }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto nao encontrado"));
     }
 
-    @DeleteMapping
+    @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Integer id){
         produtos
                 .findById(id)
                 .map(produtoExistente -> {
                     produtos.delete(produtoExistente);
+                    //A função do .map() é aplicar uma função a cada elemento de uma coleção (como uma lista, um stream ou um Optional) e coletar os resultados em uma nova coleção do mesmo tipo.
                     return Void.TYPE;
                 }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto nao encontrado"));
     }
 
     @GetMapping
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Produto getById(@PathVariable Integer id){
-        return produtos
-                .findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto nao encontrado"));
-    }
-
-    @GetMapping
-    public List<Cliente> find(Cliente filtro){
+    public List<Cliente> find(Produto filtro){
         ExampleMatcher matcher = ExampleMatcher
                 .matching()
                 .withIgnoreCase()
