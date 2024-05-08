@@ -2,9 +2,15 @@ package br.com.jamiz.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.Set;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 //JPA entende que todas as propriedades da classe definida como @Entity, sao colunas na base de dados
 @Entity//necessita de uma PK para funcionar
 public class Cliente {
@@ -19,10 +25,6 @@ public class Cliente {
     @Column(name = "cpf", length = 11)
     private String cpf;
 
-    public Cliente(){
-
-    }
-
     public Cliente(String nome, Integer id) { //construtores que recebem o ID e Nome
         this.nome = nome;
         this.id = id;
@@ -33,43 +35,6 @@ public class Cliente {
     //FetchType.EAGER -> ira trazer todos os relatiorios de pedidos isso irá deixar consulta bem pesada
     private Set<Pedido> pedidos; //colecao de objetos da clases pedido
     //Set<> -> demonstra que não deve ter elementos duplicados
-
-
-    public Set<Pedido> getPedidos() {
-        return pedidos;
-    }
-
-    public void setPedidos(Set<Pedido> pedidos) {
-        this.pedidos = pedidos;
-    }
-
-    public Cliente (String nome){
-        this.nome = nome;
-    }
-
-    public Object getNome() {
-        return nome;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
 
     @Override
     public String toString() {
