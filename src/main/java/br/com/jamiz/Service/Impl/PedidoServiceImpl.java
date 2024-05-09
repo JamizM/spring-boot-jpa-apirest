@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor //gerado construtor com todos os argumentos obrigatorios, os quais tem "final"
@@ -47,6 +48,11 @@ public class PedidoServiceImpl implements PedidoService {
         itensPedidoRepository.saveAll((itensPedido));
         pedido.setItens(itensPedido);
         return pedido;
+    }
+
+    @Override
+    public Optional<Pedido> obterPedidoCompleto(Integer id) {
+        return pedidos.findByIdFetchItens(id);
     }
 
     //converter itens em itempedido
