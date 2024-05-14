@@ -8,6 +8,7 @@ import br.com.jamiz.rest.controller.dto.AtualizacaoStatusPedidoDTO;
 import br.com.jamiz.rest.controller.dto.InformacoesItemPedidoDTO;
 import br.com.jamiz.rest.controller.dto.InformacoesPedidoDTO;
 import br.com.jamiz.rest.controller.dto.PedidoDTO;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +31,7 @@ public class PedidoController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Integer save(@RequestBody PedidoDTO dto){
+    public Integer save(@RequestBody @Valid PedidoDTO dto){
         Pedido pedido = service.salvar(dto);
         return pedido.getId(); //codigo do pedido, será possivel consultar os dados
     }
