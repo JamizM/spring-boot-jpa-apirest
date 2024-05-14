@@ -11,4 +11,8 @@ public interface PedidoService {
 
     Optional<Pedido> obterPedidoCompleto(Integer id);
 
+    default void atualizaStatus(Integer id, StatusPedido status){
+
+    }
+
 }
