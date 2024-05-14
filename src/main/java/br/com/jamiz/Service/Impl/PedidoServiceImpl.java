@@ -1,11 +1,13 @@
 package br.com.jamiz.Service.Impl;
 
+import br.com.jamiz.Exception.PedidoNaoEncontradoExcpetion;
 import br.com.jamiz.Exception.RegraNegocioExcpetion;
 import br.com.jamiz.Service.PedidoService;
 import br.com.jamiz.domain.entity.Cliente;
 import br.com.jamiz.domain.entity.ItemPedido;
 import br.com.jamiz.domain.entity.Pedido;
 import br.com.jamiz.domain.entity.Produto;
+import br.com.jamiz.domain.entity.enums.StatusPedido;
 import br.com.jamiz.domain.repository.Clientes;
 import br.com.jamiz.domain.repository.ItensPedido;
 import br.com.jamiz.domain.repository.Pedidos;
@@ -42,6 +44,7 @@ public class PedidoServiceImpl implements PedidoService {
         pedido.setTotal(dto.getTotal());
         pedido.setDataPedido(LocalDate.now());
         pedido.setCliente(cliente);
+        pedido.setStatus(StatusPedido.REALIZADO);
 
         List<ItemPedido> itensPedido = converterItens(pedido, dto.getItens());
         pedidos.save(pedido);
@@ -53,6 +56,17 @@ public class PedidoServiceImpl implements PedidoService {
     @Override
     public Optional<Pedido> obterPedidoCompleto(Integer id) {
         return pedidos.findByIdFetchItens(id);
+    }
+
+    @Override
+    @Transactional
+    public void atualizaStatus(Integer id, StatusPedido status) {
+        pedidos
+                .findById(id)
+                .map(pedido -> {
+                    pedido.setStatus(status);
+                    return pedidos.save(pedido);
+                }).orElseThrow(() -> new PedidoNaoEncontradoExcpetion());
     }
 
     //converter itens em itempedido

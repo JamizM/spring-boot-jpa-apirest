@@ -1,5 +1,6 @@
 package br.com.jamiz.domain.entity;
 
+import br.com.jamiz.domain.entity.enums.StatusPedido;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -34,6 +35,11 @@ public class Pedido {
 
     @OneToMany
     private List<ItemPedido> itens; //referencia com a tabela ItemPedido
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private StatusPedido status;
+
 
     @Override
     public String toString() {

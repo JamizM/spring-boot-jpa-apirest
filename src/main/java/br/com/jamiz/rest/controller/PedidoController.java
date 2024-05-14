@@ -3,6 +3,8 @@ package br.com.jamiz.rest.controller;
 import br.com.jamiz.Service.PedidoService;
 import br.com.jamiz.domain.entity.ItemPedido;
 import br.com.jamiz.domain.entity.Pedido;
+import br.com.jamiz.domain.entity.enums.StatusPedido;
+import br.com.jamiz.rest.controller.dto.AtualizacaoStatusPedidoDTO;
 import br.com.jamiz.rest.controller.dto.InformacoesItemPedidoDTO;
 import br.com.jamiz.rest.controller.dto.InformacoesPedidoDTO;
 import br.com.jamiz.rest.controller.dto.PedidoDTO;
@@ -42,6 +44,13 @@ public class PedidoController {
                         new ResponseStatusException(HttpStatus.NOT_FOUND, "pedido nao encontrado"));
     }
 
+    @PatchMapping("{id}")//utilizada para atualizar apenas campos especificos do DB
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateStatus(@PathVariable Integer id, @RequestBody AtualizacaoStatusPedidoDTO dto){
+        String novoStatus = dto.getNovoStatus();
+        service.atualizaStatus(id, StatusPedido.valueOf(novoStatus));
+    }
+
     private InformacoesPedidoDTO conveter(Pedido pedido){
         return InformacoesPedidoDTO
                 .builder()
@@ -50,6 +59,7 @@ public class PedidoController {
                 .cpf(pedido.getCliente().getCpf())
                 .nomeCliente(pedido.getCliente().getNome())
                 .total(pedido.getTotal())
+                .status(pedido.getStatus().name())
                 .itens(conveter((Pedido) pedido.getItens()).getItens())
                 .build();
     }
