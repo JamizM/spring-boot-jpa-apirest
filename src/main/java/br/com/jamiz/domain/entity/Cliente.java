@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
+import org.hibernate.validator.constraints.br.CPF;
 
 import java.util.Set;
 
@@ -25,6 +26,8 @@ public class Cliente {
     @NotEmpty(message = "Campo nome é obrigatorio") //quando fazermos a validação de um objeto, observa as annotations, e verifica se ela esta vazia
     private String nome;
 
+    @NotEmpty(message = "Campo obrigatorio") //mensagem mandada quando nao preencher o CPF
+    @CPF(message = "Informe um CPF valido") //mensagem quando o CPF nao for valido
     @Column(name = "cpf", length = 11)
     private String cpf;
 
