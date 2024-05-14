@@ -3,6 +3,7 @@ package br.com.jamiz.rest.controller;
 import br.com.jamiz.domain.entity.Cliente;
 import br.com.jamiz.domain.repository.Clientes;
 
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.HttpStatus;
@@ -32,8 +33,11 @@ public class ClienteController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED) //código de retorno para cliente - 201
-    public Cliente save(@RequestBody Cliente cliente){
+    public Cliente save(@RequestBody @Valid Cliente cliente){
         return clientes.save(cliente);
+        //@Valid -> Spring irá validar esse objeto usando as anotações de validação antes de chamar o método save.
+        // Se qualquer uma das validações falhar, uma resposta de erro será retornada, informando quais
+        // campos não passaram na validação e por quê.
     }
 
     @DeleteMapping("/{id}")

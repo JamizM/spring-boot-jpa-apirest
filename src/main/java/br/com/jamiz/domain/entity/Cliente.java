@@ -2,6 +2,7 @@ package br.com.jamiz.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
 import java.util.Set;
@@ -20,6 +21,8 @@ public class Cliente {
     //Essa anotação é usada para indicar como a chave primária (ID) da entidade deve ser gerada
     //automaticamente quando uma nova instância da entidade é persistida no banco de dados.
     private Integer id;
+
+    @NotEmpty(message = "Campo nome é obrigatorio") //quando fazermos a validação de um objeto, observa as annotations, e verifica se ela esta vazia
     private String nome;
 
     @Column(name = "cpf", length = 11)
