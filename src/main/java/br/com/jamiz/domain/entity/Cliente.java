@@ -23,11 +23,11 @@ public class Cliente {
     //automaticamente quando uma nova instância da entidade é persistida no banco de dados.
     private Integer id;
 
-    @NotEmpty(message = "Campo nome é obrigatorio") //quando fazermos a validação de um objeto, observa as annotations, e verifica se ela esta vazia
+    @NotEmpty(message = "{campo.nome.obrigatorio}") //quando fazermos a validação de um objeto, observa as annotations, e verifica se ela esta vazia
     private String nome;
 
-    @NotEmpty(message = "Campo obrigatorio") //mensagem mandada quando nao preencher o CPF
-    @CPF(message = "Informe um CPF valido") //mensagem quando o CPF nao for valido
+    @NotEmpty(message = "{campo.cpf.obrigatorio}") //mensagem mandada quando nao preencher o CPF
+    @CPF(message = "{campo.cpf.invalido}") //mensagem quando o CPF nao for valido
     @Column(name = "cpf", length = 11)
     private String cpf;
 

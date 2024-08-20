@@ -18,13 +18,13 @@ public class PedidoDTO {
     //mapear objeto com propriedades simples
     //recebe via requisicao e cria o modelo de dados
 
-    @NotNull(message = "Informe  código do cliente")
+    @NotNull(message = "{campo.codigo-cliente.obrigatorio}")
     private Integer cliente;
 
-    @NotNull(message = "Campo total do pedido é obrigatorio")
+    @NotNull(message = "{campo.total-pedidos.obrigatorio}")
     private BigDecimal total;
 
     //criar annotation customizada pis é uma lista
-    @NotEmptyList(message = "pedido nao pode ser realizado sem itens") //anottation customizada
+    @NotEmptyList(message = "{campo.items-pedido.obrigatorio}") //anottation customizada
     private List<ItemPedidoDTO> itens;
 }

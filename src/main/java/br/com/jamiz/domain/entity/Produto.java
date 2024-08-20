@@ -29,11 +29,11 @@ public class Produto {
     @Column(name = "id") //nao é necessario colocar pois tem o mesmo nome na tabela, porem colocamos para facilitar entendimento
     private Integer id;
 
-    @NotEmpty(message = "campo descricao obrigatoria") //usase o NotEmpty Aqui pois o campo é uma String, pois tambem pode ter uma String vazia
+    @NotEmpty(message = "{campo.descricao.obrigatorio}") //usase o NotEmpty Aqui pois o campo é uma String, pois tambem pode ter uma String vazia
     @Column(name = "descricao")
     private String descricao;
 
-    @NotNull(message = "campo preco é obrigatorio") //neste caso é notnull pois o preco é inevitavel
+    @NotNull(message = "{campo.preco.obrigatorio}") //neste caso é notnull pois o preco é inevitavel
     @Column(name = "preco_unitario")
     private BigDecimal preco;
 }
