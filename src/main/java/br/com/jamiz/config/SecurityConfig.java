@@ -14,7 +14,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
-import java.awt.image.MemoryImageSource;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -28,19 +27,22 @@ public class SecurityConfig {
     }
 
     //parte de autenticacao
-
-
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
 
     //construcao de um objeto User
     @Bean
     public UserDetailsService userDetailsService(){
-        UserDetails user1 = User.withUsername("user1")
-                .password("password1")
+        UserDetails user1 = User
+                .withUsername("user1")
+                .password(passwordEncoder().encode("password1"))
                 .roles("USER")
                 .build();
 
         UserDetails admin = User.withUsername("admin")
-                .password("adminPass")
+                .password(passwordEncoder().encode("adminPass"))
                 .roles("ADMIN")
                 .build();
 
@@ -58,4 +60,3 @@ public class SecurityConfig {
     }
 }
 
-//https://www.youtube.com/watch?v=iWwv9r9inns
