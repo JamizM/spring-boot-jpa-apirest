@@ -6,7 +6,10 @@ import br.com.jamiz.domain.repository.Clientes;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -25,19 +28,23 @@ public class ClienteController {
 
     //    @RequestMapping(value = "/hello/{nome}", method = RequestMethod.GET) //diz que retorna um método GET
     @GetMapping("/{id}")
-    public Cliente getClienteById(@PathVariable Integer id){ //definindo que vai receber variavel via URL
-        return clientes
+    public ResponseEntity<Cliente> getClienteById(@PathVariable Integer id) {
+        Cliente cliente = clientes
                 .findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente nao encontrado"));
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_TYPE, "application/json")
+                .body(cliente);
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED) //código de retorno para cliente - 201
-    public Cliente save(@RequestBody @Valid Cliente cliente){
-        return clientes.save(cliente);
-        //@Valid -> Spring irá validar esse objeto usando as anotações de validação antes de chamar o método save.
-        // Se qualquer uma das validações falhar, uma resposta de erro será retornada, informando quais
-        // campos não passaram na validação e por quê.
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<Cliente> save(@RequestBody @Valid Cliente cliente) {
+        Cliente savedCliente = clientes.save(cliente);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .header(HttpHeaders.CONTENT_TYPE, "application/json")
+                .body(savedCliente);
     }
 
     @DeleteMapping("/{id}")

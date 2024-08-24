@@ -1,62 +1,64 @@
 package br.com.jamiz.config;
 
+import br.com.jamiz.Service.Impl.UserServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
-
 import static org.springframework.security.config.Customizer.withDefaults;
 
-@EnableWebSecurity //
+@Configuration
+@EnableWebSecurity
 public class SecurityConfig {
 
-    //objeto que criptografa e descriptogrfa a senha de usuario
+    private UserServiceImpl userService;
+
     @Bean
-    public PasswordEncoder passwordEncoder(){
-       return new BCryptPasswordEncoder(); //toda vez que usuario passa a senha, é gerado um hash
+    public PasswordEncoder pwEncoder(){
+        //senha encriptada
+        return new BCryptPasswordEncoder();
     }
 
-    //parte de autenticacao
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception{
+        auth.userDetailsService(userService)
+                .passwordEncoder(pwEncoder());
     }
 
-    //construcao de um objeto User
     @Bean
-    public UserDetailsService userDetailsService(){
-        UserDetails user1 = User
-                .withUsername("user1")
-                .password(passwordEncoder().encode("password1"))
+    public UserDetailsService userDetaisService() {
+        UserDetails user = User.withUsername("user")
+                .password(pwEncoder().encode("123"))
                 .roles("USER")
                 .build();
 
         UserDetails admin = User.withUsername("admin")
-                .password(passwordEncoder().encode("adminPass"))
+                .password(pwEncoder().encode("123"))
                 .roles("ADMIN")
                 .build();
 
-        return new InMemoryUserDetailsManager(user1, admin);
+        return new InMemoryUserDetailsManager(admin, user);
     }
 
-    //verificacao se o usuario tem acesso a certas roles dentro do projeto
+
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests((authz) -> authz.anyRequest().authenticated()
-                )
+    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception{
+        http.authorizeHttpRequests((requests) ->
+                        requests.requestMatchers("/h2-console/**").permitAll() //aqui definimos a ecessao de quando quisermos uar só em uma pagina
+                                .anyRequest().authenticated());
+                http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(withDefaults());
         return http.build();
     }
 }
-
