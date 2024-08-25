@@ -44,5 +44,5 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
         filterChain.doFilter(request, response);
     }
-    //classe intercepta uma requisicao, e esta mandando uma
+    //classe intercepta uma requisicao
 }

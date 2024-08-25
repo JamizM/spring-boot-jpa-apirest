@@ -1,14 +1,14 @@
 package br.com.jamiz.config;
 
 import br.com.jamiz.Service.Impl.UserServiceImpl;
+import br.com.jamiz.security.jwt.JwtAuthFilter;
+import br.com.jamiz.security.jwt.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,16 +17,18 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import jakarta.servlet.Filter;
-
+import org.springframework.web.filter.OncePerRequestFilter;
 
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+    @Autowired
     private UserServiceImpl userService;
+
+    @Autowired
+    private JwtService jwtService;
 
     @Bean
     public PasswordEncoder pwEncoder(){
@@ -48,6 +50,11 @@ public class SecurityConfig {
                 .build();
 
         return new InMemoryUserDetailsManager(admin, user);
+    }
+
+    @Bean
+    public OncePerRequestFilter jwtFilter(){
+        return new JwtAuthFilter(jwtService, userService);
     }
 
     @Bean
