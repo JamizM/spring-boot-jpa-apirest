@@ -1,5 +1,6 @@
 package br.com.jamiz.Service.Impl;
 
+import br.com.jamiz.Exception.SenhaInvalidaException;
 import br.com.jamiz.domain.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -37,5 +38,14 @@ public class UserServiceImpl implements UserDetailsService {
                 .password(usuario.getSenha())
                 .roles(roles)
                 .build();
+    }
+
+    public UserDetails autenticar(Usuario usuario){
+        UserDetails user = loadUserByUsername(usuario.getLogin());
+        boolean senhasBatem = encoder.matches(usuario.getSenha(), user.getPassword()); //comparacação da senhas
+        if(senhasBatem){
+            return user;
+        }
+        throw new SenhaInvalidaException();
     }
 }
