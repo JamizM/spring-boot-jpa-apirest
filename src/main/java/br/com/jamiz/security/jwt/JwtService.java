@@ -1,5 +1,6 @@
-package br.com.jamiz;
+package br.com.jamiz.security.jwt;
 
+import br.com.jamiz.VendasApplication;
 import br.com.jamiz.domain.entity.Usuario;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -10,7 +11,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Service;
-
 
 import java.time.Instant;
 import java.time.LocalDateTime;
